@@ -72,28 +72,28 @@ public class ServerEx {
                 int idx = 0;
                 String cmd = toks[idx++];
                 if (!cmd.equalsIgnoreCase("CALC")) {
-                    return String.format("Error occurred: %s %d %s", Protocol.TYPE_ERR, Protocol.ERR_INVALID_OPCODE,
+                    return String.format("RESP %s %d %s", Protocol.TYPE_ERR, Protocol.ERR_INVALID_OPCODE,
                             "INVALID_CMD");
                 }
                 if (idx >= toks.length)
-                    return String.format("Error occurred: %s %d %s", Protocol.TYPE_ERR, Protocol.ERR_INVALID_OPCODE, "NO_OPCODE");
+                    return String.format("RESP %s %d %s", Protocol.TYPE_ERR, Protocol.ERR_INVALID_OPCODE, "NO_OPCODE");
                 String op = toks[idx++].toUpperCase();
                 if (!(op.equals("ADD") || op.equals("SUB") || op.equals("MUL") || op.equals("DIV"))) {
-                    return String.format("Error occurred: %s %d %s", Protocol.TYPE_ERR, Protocol.ERR_INVALID_OPCODE, "UNKNOWN_OP");
+                    return String.format("RESP %s %d %s", Protocol.TYPE_ERR, Protocol.ERR_INVALID_OPCODE, "UNKNOWN_OP");
                 }
                 // expect exactly 2 args
                 if (toks.length - idx != 2) {
-                    return String.format("Error occurred: %s %d %s", Protocol.TYPE_ERR, Protocol.ERR_ARG_COUNT, "ARG_COUNT");
+                    return String.format("RESP %s %d %s", Protocol.TYPE_ERR, Protocol.ERR_ARG_COUNT, "ARG_COUNT");
                 }
                 double a, b;
                 try {
                     a = Double.parseDouble(toks[idx++]);
                     b = Double.parseDouble(toks[idx++]);
                 } catch (NumberFormatException nfe) {
-                    return String.format("Error occurred: %s %d %s", Protocol.TYPE_ERR, Protocol.ERR_INVALID_NUMBER, "BAD_NUMBER");
+                    return String.format("RESP %s %d %s", Protocol.TYPE_ERR, Protocol.ERR_INVALID_NUMBER, "BAD_NUMBER");
                 }
                 if (op.equals("DIV") && b == 0.0) {
-                    return String.format("Error occurred: %s %d %s", Protocol.TYPE_ERR, Protocol.ERR_DIV_BY_ZERO, "DIV_BY_ZERO");
+                    return String.format("RESP %s %d %s", Protocol.TYPE_ERR, Protocol.ERR_DIV_BY_ZERO, "DIV_BY_ZERO");
                 }
                 double result = 0.0;
                 switch (op) {
@@ -112,10 +112,10 @@ public class ServerEx {
                 }
                 // strip .0 for integers
                 String outVal = (result == Math.rint(result)) ? String.valueOf((long) result) : String.valueOf(result);
-                return String.format("The result of %s is %s", op, outVal);
+                return String.format("RESP %s %d %s", Protocol.TYPE_ANS, Protocol.CODE_OK, outVal);
 
             } catch (Exception ex) {
-                return String.format("Error occurred: %s %d %s", Protocol.TYPE_ERR, Protocol.ERR_INTERNAL, "INTERNAL");
+                return String.format("RESP %s %d %s", Protocol.TYPE_ERR, Protocol.ERR_INTERNAL, "INTERNAL");
             }
         }
     }
