@@ -12,9 +12,12 @@ public class ClientEx {
             Scanner sc = new Scanner(System.in)) 
         {
             System.out.println("Connected to " + c.getHost() + ":" + c.getPort());
+            System.out.println("Hello,");
+            System.out.println("I will calculate two numbers for you.");
+            System.out.println("Choose from <ADD><SUB><DIV><MUL> and two numbers on a line.");
             System.out.println("Enter commands like: CALC ADD 10 20");
         while (true) {
-                System.out.print("cmd> ");
+                System.out.print("Enter: ");
                 String line = sc.nextLine();
                 if (line == null) break;
                 line = line.trim();
@@ -23,7 +26,7 @@ public class ClientEx {
                 out.flush();
                 String resp = in.readLine();
                 if (resp == null) break;
-                System.out.println("Server -> " + resp);
+                System.out.println("Server: " + resp);
             }
 
         } catch (Exception e) {
